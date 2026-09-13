@@ -1,0 +1,40 @@
+name: Feature request
+description: Propose a new formatter or an option for an existing one.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        readable is deliberately small: stdlib only, pure functions, predictable
+        output, no business logic. Please read the Non-Goals section of the
+        README before proposing.
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: What are you formatting, for whom, and what do you do today?
+    validations:
+      required: true
+  - type: textarea
+    id: api
+    attributes:
+      label: Proposed API
+      description: Signature and a few input -> output examples, including edge cases.
+      render: go
+      placeholder: |
+        func Foo(n int64) string
+        // Foo(0)  -> "..."
+        // Foo(-1) -> "..."
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Why it fits the scope
+      description: Why this belongs here rather than in your application, and how it stays stdlib-only, locale-free and small (see Non-Goals).
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered

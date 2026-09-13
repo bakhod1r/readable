@@ -1,0 +1,58 @@
+name: Bug report
+description: A function returns the wrong string, panics, or misbehaves.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. For security issues (for example a masking function
+        revealing too much) do **not** open an issue; see SECURITY.md.
+  - type: input
+    id: function
+    attributes:
+      label: Function
+      placeholder: readable.Number
+    validations:
+      required: true
+  - type: textarea
+    id: input
+    attributes:
+      label: Input
+      description: Exact arguments, ideally as a runnable Go snippet.
+      render: go
+      placeholder: readable.Number(999999)
+    validations:
+      required: true
+  - type: input
+    id: expected
+    attributes:
+      label: Expected output
+      placeholder: '"1M"'
+    validations:
+      required: true
+  - type: input
+    id: actual
+    attributes:
+      label: Actual output
+      placeholder: '"1000K"'
+    validations:
+      required: true
+  - type: input
+    id: go-version
+    attributes:
+      label: Go version
+      description: Output of `go version`.
+      placeholder: go version go1.25.0 linux/amd64
+    validations:
+      required: true
+  - type: input
+    id: lib-version
+    attributes:
+      label: readable version
+      placeholder: v0.1.0
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context

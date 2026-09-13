@@ -1,0 +1,22 @@
+# Coverage
+coverage.out
+coverage.html
+*.coverprofile
+cover.out
+*.test
+*.prof
+*.out
+
+# Fuzz: the local cache lives in $GOCACHE/fuzz; testdata/fuzz holds
+# regression inputs and MUST be committed, so it is not ignored.
+
+# Release scratch
+RELEASE_NOTES.md
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+docs/changelog.md
