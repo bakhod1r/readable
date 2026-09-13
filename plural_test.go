@@ -17,7 +17,7 @@ func TestPlural(t *testing.T) {
 		{2, "user", "users"},
 		{2, "bus", "buses"},
 		{2, "box", "boxes"},
-		{2, "quiz", "quizes"},
+		{2, "quiz", "quizes"}, //nolint:misspell // documents the naive -es rule
 		{2, "match", "matches"},
 		{2, "dish", "dishes"},
 		{2, "city", "cities"},

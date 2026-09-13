@@ -70,10 +70,10 @@ func TestDivRound(t *testing.T) {
 
 func TestAppendGrouped(t *testing.T) {
 	runStrCases(t, []strCase{
-		{"0", string(appendGrouped(nil, 0, ',')), "0"},
-		{"999", string(appendGrouped(nil, 999, ',')), "999"},
-		{"1000", string(appendGrouped(nil, 1000, ',')), "1,000"},
-		{"max", string(appendGrouped(nil, math.MaxUint64, ',')), "18,446,744,073,709,551,615"},
+		{"0", string(appendGrouped(nil, 0)), "0"},
+		{"999", string(appendGrouped(nil, 999)), "999"},
+		{"1000", string(appendGrouped(nil, 1000)), "1,000"},
+		{"max", string(appendGrouped(nil, math.MaxUint64)), "18,446,744,073,709,551,615"},
 	})
 }
 

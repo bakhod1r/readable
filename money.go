@@ -99,7 +99,7 @@ func formatMoney(amount int64, code string, exp int, symbol string) string {
 	}
 	buf = append(buf, symbol...)
 	pow := pow10[exp]
-	buf = appendGrouped(buf, abs/pow, ',')
+	buf = appendGrouped(buf, abs/pow)
 	buf = appendFraction(buf, abs%pow, exp, true, ".")
 	if symbol == "" {
 		buf = appendCode(buf, code)

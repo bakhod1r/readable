@@ -37,9 +37,9 @@ func DurationNatural(d time.Duration) string {
 		buf = append(buf, '-')
 	}
 	for i := range n {
-		switch {
-		case i == 0:
-		case i == n-1:
+		switch i {
+		case 0:
+		case n - 1:
 			buf = append(buf, " and "...)
 		default:
 			buf = append(buf, ", "...)

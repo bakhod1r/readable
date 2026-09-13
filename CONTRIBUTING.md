@@ -21,7 +21,7 @@ opening a pull request.
 
 ## Development workflow
 
-Requirements: Go 1.24+, GNU make, [golangci-lint] v1.64.x.
+Requirements: Go 1.24+, GNU make, [golangci-lint] v2.x.
 
 ```sh
 make check        # gofmt check, go vet, golangci-lint, tests with -race

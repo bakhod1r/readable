@@ -81,7 +81,7 @@ func MoneyChange(amount int64, currency string) string {
 // appendMoneyUnsigned appends a magnitude formatted like Money.
 func appendMoneyUnsigned(buf []byte, abs uint64, code string, exp int) []byte {
 	pow := pow10[exp]
-	buf = appendGrouped(buf, abs/pow, ',')
+	buf = appendGrouped(buf, abs/pow)
 	buf = appendFraction(buf, abs%pow, exp, true, ".")
 	return appendCode(buf, code)
 }
