@@ -38,8 +38,8 @@ case-insensitively but printed as given.
 
 Active ISO 4217 codes use their standard number of minor digits (USD and
 CHF have 2, JPY has 0, BHD has 3), except UZS, which has 0. Any other code
-(for example "USDT") is accepted and treated as having 0 minor digits; use
-MoneyWithPrecision to choose explicitly.
+(for example "USDT") is accepted and treated as having 0 minor digits;
+use MoneyWithPrecision to choose explicitly.
 
 ```go
 Money(150000000, "UZS") // "150,000,000 UZS"

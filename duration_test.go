@@ -41,18 +41,18 @@ func TestDuration(t *testing.T) {
 	}
 }
 
-func TestDurationWithPrecision(t *testing.T) {
+func TestDurationWithOptions(t *testing.T) {
 	d := 3*24*time.Hour + 12*time.Hour + 32*time.Minute + 5*time.Second
 	runStrCases(t, []strCase{
-		{"2", DurationWithPrecision(d, 2), "3d 12h"},
-		{"1", DurationWithPrecision(d, 1), "3d"},
-		{"0 all", DurationWithPrecision(d, 0), "3d 12h 32m 5s"},
-		{"-1 all", DurationWithPrecision(d, -1), "3d 12h 32m 5s"},
-		{"99", DurationWithPrecision(d, 99), "3d 12h 32m 5s"},
-		{"gap", DurationWithPrecision(time.Hour+5*time.Second, 2), "1h"},
-		{"subsecond", DurationWithPrecision(5*time.Millisecond, 1), "5ms"},
-		{"long", DurationLongWithPrecision(d, 2), "3 days, 12 hours"},
-		{"long zero", DurationLongWithPrecision(0, 2), "0 seconds"},
+		{"2", DurationWithOptions(d, DurationOptions{Units: 2}), "3d 12h"},
+		{"1", DurationWithOptions(d, DurationOptions{Units: 1}), "3d"},
+		{"0 all", DurationWithOptions(d, DurationOptions{Units: 0}), "3d 12h 32m 5s"},
+		{"-1 all", DurationWithOptions(d, DurationOptions{Units: -1}), "3d 12h 32m 5s"},
+		{"99", DurationWithOptions(d, DurationOptions{Units: 99}), "3d 12h 32m 5s"},
+		{"gap", DurationWithOptions(time.Hour+5*time.Second, DurationOptions{Units: 2}), "1h"},
+		{"subsecond", DurationWithOptions(5*time.Millisecond, DurationOptions{Units: 1}), "5ms"},
+		{"long", DurationWithOptions(d, DurationOptions{Units: 2, Long: true}), "3 days, 12 hours"},
+		{"long zero", DurationWithOptions(0, DurationOptions{Units: 2, Long: true}), "0 seconds"},
 	})
 }
 
@@ -85,11 +85,11 @@ func TestDurationDocExamples(t *testing.T) {
 		{Duration(90 * time.Second), "1m 30s"},
 		{Duration(125 * time.Millisecond), "125ms"},
 		{Duration(0), "0s"},
-		{DurationWithPrecision(3*24*time.Hour+12*time.Hour+32*time.Minute, 2), "3d 12h"},
-		{DurationWithPrecision(time.Hour+5*time.Second, 2), "1h"},
+		{DurationWithOptions(3*24*time.Hour+12*time.Hour+32*time.Minute, DurationOptions{Units: 2}), "3d 12h"},
+		{DurationWithOptions(time.Hour+5*time.Second, DurationOptions{Units: 2}), "1h"},
 		{DurationLong(3*time.Hour + 25*time.Minute + 12*time.Second), "3 hours, 25 minutes, 12 seconds"},
 		{DurationLong(0), "0 seconds"},
-		{DurationLongWithPrecision(3*time.Hour+25*time.Minute+12*time.Second, 2), "3 hours, 25 minutes"},
+		{DurationWithOptions(3*time.Hour+25*time.Minute+12*time.Second, DurationOptions{Units: 2, Long: true}), "3 hours, 25 minutes"},
 		{Latency(350 * time.Microsecond), "350µs"},
 		{Latency(42 * time.Millisecond), "42ms"},
 		{Latency(1400 * time.Millisecond), "1.4s"},

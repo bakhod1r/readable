@@ -21,7 +21,7 @@ Initial release. Standard library only, Go 1.24+.
 - **Bytes & throughput**: `Bytes`, `BytesIEC`, `BytesSI`, `FileSize`,
   `BytesRate`, `Throughput`, `ThroughputIEC`, `Bandwidth`.
 - **Durations & time**: `Duration`, `DurationShort`, `DurationLong`,
-  `DurationWithPrecision`, `DurationLongWithPrecision`, `DurationApprox`,
+  `DurationWithOptions`, `DurationApprox`,
   `DurationNatural`, `Latency`, `RelativeTime`, `RelativeTimeFrom`, `Date`,
   `DateFrom`, `Time`, `TimeFrom`, `TimeRange`, `TimeRangeFrom`.
 - **Money** (integer minor units): `Money`, `MoneyWithPrecision`,
@@ -33,7 +33,6 @@ Initial release. Standard library only, Go 1.24+.
   `ListOptions`, `Truncate`, `Bool`, `BoolLabel`.
 - **Masking & IDs**: `Mask`, `MaskCard`, `MaskEmail`, `MaskPhone`, `MaskIP`,
   `MaskToken`, `ID`, `Hash`, `ShortUUID`.
-- **Logs**: `LogNumber`, `LogBytes`, `LogDuration`.
 
 [Unreleased]: https://github.com/bakhod1r/readable/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/bakhod1r/readable/releases/tag/v0.1.0

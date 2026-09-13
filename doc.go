@@ -32,7 +32,7 @@
 //
 // [Duration], [DurationShort], [DurationLong], [DurationNatural] and
 // [DurationApprox] describe a [time.Duration] at different lengths;
-// [DurationWithPrecision] limits the number of components. [Latency] picks a
+// [DurationWithOptions] limits the number of components. [Latency] picks a
 // single unit for metrics ("1.4s").
 //
 // [RelativeTime], [Date], [Time] and [TimeRange] read the current clock via
@@ -57,8 +57,7 @@
 // [Humanize] and [Enum] turn identifiers such as "user_id" or "IN_PROGRESS"
 // into labels ("User ID", "In progress"). [List] and [ListWithOptions] join
 // items as an English list. [Truncate] shortens a string around "...".
-// [Bool] and [BoolLabel] render booleans. [LogNumber], [LogBytes] and
-// [LogDuration] produce compact, space-free values for structured logs.
+// [Bool] and [BoolLabel] render booleans.
 //
 // # Masking
 //
