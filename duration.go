@@ -81,17 +81,21 @@ func DurationLong(d time.Duration) string {
 }
 
 func formatDuration(d time.Duration, units int, long bool) string {
-	neg, abs := absInt64(int64(d))
 	var arr [96]byte
-	buf := arr[:0]
-	if neg {
-		buf = append(buf, '-')
-	}
+	return string(appendDuration(arr[:0], d, units, long))
+}
+
+// appendDuration appends d formatted like formatDuration.
+func appendDuration(buf []byte, d time.Duration, units int, long bool) []byte {
+	neg, abs := absInt64(int64(d))
 	if abs == 0 {
 		if long {
-			return "0 seconds"
+			return append(buf, "0 seconds"...)
 		}
-		return "0s"
+		return append(buf, "0s"...)
+	}
+	if neg {
+		buf = append(buf, '-')
 	}
 	if abs < uint64(time.Second) {
 		for _, p := range subSecondParts {
@@ -100,7 +104,7 @@ func formatDuration(d time.Duration, units int, long bool) string {
 				break
 			}
 		}
-		return string(buf)
+		return buf
 	}
 
 	start := 0
@@ -128,7 +132,7 @@ func formatDuration(d time.Duration, units int, long bool) string {
 		first = false
 		buf = appendPart(buf, v, p, long)
 	}
-	return string(buf)
+	return buf
 }
 
 func appendPart(buf []byte, v uint64, p durationPart, long bool) []byte {

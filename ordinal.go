@@ -13,6 +13,12 @@ import "strconv"
 //	Ordinal(-2)  // "-2nd"
 //	Ordinal(111) // "111th"
 func Ordinal(n int64) string {
+	var arr [24]byte
+	return string(appendOrdinal(arr[:0], n))
+}
+
+// appendOrdinal appends n formatted like Ordinal.
+func appendOrdinal(buf []byte, n int64) []byte {
 	neg, abs := absInt64(n)
 	suffix := "th"
 	if m := abs % 100; m < 11 || m > 13 {
@@ -25,12 +31,9 @@ func Ordinal(n int64) string {
 			suffix = "rd"
 		}
 	}
-	var arr [24]byte
-	buf := arr[:0]
 	if neg {
 		buf = append(buf, '-')
 	}
 	buf = strconv.AppendUint(buf, abs, 10)
-	buf = append(buf, suffix...)
-	return string(buf)
+	return append(buf, suffix...)
 }

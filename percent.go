@@ -27,18 +27,23 @@ func Percent(ratio float64) string {
 //	PercentWithPrecision(0.123456, 0) // "12%"
 //	PercentWithPrecision(0.123456, 1) // "12.3%"
 func PercentWithPrecision(ratio float64, precision int) string {
+	var arr [64]byte
+	return string(appendPercent(arr[:0], ratio, precision))
+}
+
+// appendPercent appends ratio formatted like PercentWithPrecision.
+func appendPercent(buf []byte, ratio float64, precision int) []byte {
 	x := ratio * 100
 	switch {
 	case math.IsNaN(x):
-		return "NaN%"
+		return append(buf, "NaN%"...)
 	case math.IsInf(x, 1):
-		return "+Inf%"
+		return append(buf, "+Inf%"...)
 	case math.IsInf(x, -1):
-		return "-Inf%"
+		return append(buf, "-Inf%"...)
 	}
-	var arr [64]byte
-	buf := appendFloat(arr[:0], x, clampPrecision(precision))
-	return string(append(buf, '%'))
+	buf = appendFloat(buf, x, clampPrecision(precision))
+	return append(buf, '%')
 }
 
 // PercentChange formats the relative change from from to to, measured against

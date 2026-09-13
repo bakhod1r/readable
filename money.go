@@ -91,9 +91,13 @@ func MoneyWithPrecision(amount int64, currency string, minorDigits int) string {
 // formatMoney renders amount minor units with exp minor digits, prefixed by
 // symbol or, when symbol is empty, followed by code.
 func formatMoney(amount int64, code string, exp int, symbol string) string {
-	neg, abs := absInt64(amount)
 	var arr [64]byte
-	buf := arr[:0]
+	return string(appendMoney(arr[:0], amount, code, exp, symbol))
+}
+
+// appendMoney appends amount formatted like formatMoney.
+func appendMoney(buf []byte, amount int64, code string, exp int, symbol string) []byte {
+	neg, abs := absInt64(amount)
 	if neg {
 		buf = append(buf, '-')
 	}
@@ -104,7 +108,7 @@ func formatMoney(amount int64, code string, exp int, symbol string) string {
 	if symbol == "" {
 		buf = appendCode(buf, code)
 	}
-	return string(buf)
+	return buf
 }
 
 // appendCode appends " "+code, or nothing for an empty code.
