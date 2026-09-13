@@ -2,52 +2,42 @@
 
 ## Supported versions
 
-`readable` has not tagged a release yet. Until v1, only the latest commit on
-`main` is supported; after v1, fixes land on the latest minor release.
+| Version | Supported |
+| ------- | --------- |
+| 0.1.x   | Yes       |
+| < 0.1   | No        |
+
+Before v1, only the latest minor release receives fixes.
 
 ## Reporting a vulnerability
 
-**Do not open a public issue.**
+Please **do not** open a public issue. Report privately through
+[GitHub Security Advisories](https://github.com/bakhod1r/readable/security/advisories/new)
+("Report a vulnerability" on the Security tab).
 
-Report privately through GitHub's
-[private vulnerability reporting](https://github.com/bakhod1r/readable/security/advisories/new),
-or by email to **bakhodiryashinmansur@gmail.com** with `[readable security]` in
-the subject.
-
-Please include:
-
-- the affected version or commit,
-- a minimal reproduction (the call and the input value),
-- the impact you believe it has.
-
-You can expect an acknowledgement within 72 hours and an assessment within
-7 days. If the report is confirmed, a patch release and a GitHub Security
-Advisory follow; you will be credited unless you ask otherwise.
+Include the function, the exact input, the output you got, and why it is a
+security problem.
 
 ## Scope
 
-`readable` only formats values into strings, so the security-relevant surface
-is narrow but real. In scope:
+In scope:
 
-- **Masking leaks** — `Mask`, `MaskEmail`, `MaskPhone`, `MaskCard`,
-  `MaskToken`, `MaskIP`, `Truncate`, `Hash` or `ShortUUID` revealing more of
-  the input than documented, for any input (short, empty, malformed, invalid
-  UTF-8, multi-byte).
-- **Panics** — any input that makes an exported function panic, which can
-  crash a logging or request path.
-- **Denial of service** — an input that makes a function allocate or loop
-  without bound.
+- **Masking leaks.** `Mask`, `MaskCard`, `MaskEmail`, `MaskPhone`, `MaskIP`,
+  `MaskToken` document what they reveal. Any input that makes them reveal more
+  than documented (extra digits, length of hidden parts where a fixed
+  placeholder is promised, secret bytes via invalid UTF-8) is a vulnerability.
+- **Denial of service.** Panics, unbounded allocation, or super-linear time on
+  pathological input (huge strings, extreme integers, NaN/Inf, invalid UTF-8).
 
 Out of scope:
 
-- Sensitive values a caller logs without passing them through a `Mask*`
-  function.
-- Masking that is weaker than a caller wants but matches the documented
-  behaviour — open a feature request instead.
-- Anything requiring an attacker who already controls the process.
+- `Truncate`, `Hash` and `ShortUUID` are for readability and deliberately
+  reveal characters; they are not masking functions.
+- Misuse such as logging the unmasked value next to the masked one.
 
-## Handling sensitive values safely
+## Response timeline
 
-- Mask before logging, not after: `log.Printf("card=%s", readable.MaskCard(pan))`.
-- Masking is for display, not protection. A masked value is not encrypted or
-  hashed — never store it as a substitute for the real secret.
+- Acknowledgement within 3 business days.
+- Initial assessment within 7 days.
+- Fix and advisory for confirmed issues within 30 days, coordinated with the
+  reporter. Credit is given unless you ask otherwise.

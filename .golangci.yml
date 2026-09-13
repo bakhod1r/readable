@@ -1,0 +1,66 @@
+# golangci-lint v1 configuration (matches the pinned version in CI and Makefile).
+run:
+  timeout: 5m
+  tests: true
+
+linters:
+  disable-all: true
+  enable:
+    - copyloopvar
+    - errcheck
+    - errorlint
+    - gocritic
+    - godot
+    - gofmt
+    - goimports
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - intrange
+    - misspell
+    - nolintlint
+    - perfsprint
+    - prealloc
+    - revive
+    - staticcheck
+    - unconvert
+    - unparam
+    - unused
+    - usestdlibvars
+
+linters-settings:
+  govet:
+    enable-all: true
+    disable:
+      # Struct layout is chosen for readability; the few option structs are
+      # not allocated in hot loops.
+      - fieldalignment
+  gosec:
+    excludes:
+      # G115 (integer overflow on conversion) reports every int64<->uint64
+      # conversion. This package performs such conversions only after explicit
+      # sign/range handling (e.g. magnitude of math.MinInt64 via uint64), which
+      # the rule cannot see, so it yields false positives only.
+      - G115
+  revive:
+    rules:
+      - name: exported
+        arguments:
+          - checkPrivateReceivers
+      - name: package-comments
+      - name: var-naming
+      - name: indent-error-flow
+      - name: error-strings
+      - name: receiver-naming
+  godot:
+    scope: declarations
+  nolintlint:
+    require-explanation: true
+    require-specific: true
+  goimports:
+    local-prefixes: github.com/bakhod1r/readable
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0

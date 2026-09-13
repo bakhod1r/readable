@@ -1,93 +1,90 @@
 # Contributing to readable
 
-Thanks for taking the time to contribute. This is a small, focused library, so
-the bar is simple: keep it **zero-dependency**, keep it **pure**, and keep the
-public API **stable**.
+Thanks for helping. readable is small on purpose; please read this before
+opening a pull request.
 
-## Ground rules
+## Principles
 
-1. **Stdlib only.** `readable` must never require a third-party module.
-   `go.mod` has no `require` block, and CI fails if `go mod tidy` changes it.
-   Test helpers are no exception.
-2. **Pure and deterministic.** Formatters take a value and return a string. No
-   global state, no hidden `time.Now()` (use the `...From(now, t)` variants),
-   no locale lookups, no I/O. Every function must be safe for concurrent use.
-3. **Never panic.** Any input — `MinInt64`, `NaN`, empty strings, invalid
-   UTF-8 — returns a sensible string. New formatters get a fuzz target in
-   `fuzz_test.go`.
-4. **Backwards compatibility.** Output strings are part of the API. Changing
-   what an existing call prints is a breaking change; new behaviour goes behind
-   a new function or an options struct field, not a changed default.
-5. **Masking never leaks.** `Mask*`, `Truncate`, `Hash` and `ShortUUID` must
-   never reveal more characters than documented. If you touch `mask.go` or
-   `id.go`, add a test proving short and malformed inputs stay hidden.
+- **Zero dependencies.** Standard library only. `go.mod` has no `require`.
+- **Predictable output.** Same input, same string, on every platform and Go
+  version. Output formats are documented in GoDoc with real examples and are
+  treated as API.
+- **No business logic.** Formatting only: no locale databases, no exchange
+  rates, no timezone lookup, no parsing of user input into domain objects.
+- **Pure functions.** No I/O, no hidden clock reads except in the documented
+  `time.Now` convenience wrappers, which always have a `...From` variant.
+- **No mutable globals.** Package-level tables are read-only; everything is
+  safe for concurrent use without locks.
+- **Integer math for exactness.** Integer inputs are scaled and rounded with
+  integer arithmetic; floats are used only where the input is a float.
+- **Fail closed** in masking functions: when in doubt, reveal less.
 
-## Getting started
+## Development workflow
 
-```bash
-git clone https://github.com/bakhod1r/readable
-cd readable
-go test -race ./...
+Requirements: Go 1.24+, GNU make, [golangci-lint] v1.64.x.
+
+```sh
+make check        # gofmt check, go vet, golangci-lint, tests with -race
+make cover        # coverage.html and the 100% gate
+make fuzz         # every fuzz target, FUZZTIME=30s each
+make bench        # benchmarks with -benchmem
+make vuln         # govulncheck
+make tidy
 ```
 
-There is nothing to install — no code generation, no make targets.
+1. Open an issue first for new API so scope can be agreed.
+2. Branch from `main`, keep the change focused.
+3. `make check` and `make cover` must pass before you push.
 
-## Before you open a pull request
+## Test requirements
 
-Run what CI runs:
+- 100% statement coverage is enforced in CI.
+- Table-driven tests covering normal, boundary (zero, unit thresholds,
+  rounding that promotes to the next unit), negative and extreme values
+  (`math.MinInt64`, `math.MaxInt64`, `MaxUint64`, NaN, ±Inf, invalid UTF-8).
+- A runnable `Example` for every exported function; its `// Output:` is the
+  documentation.
+- A benchmark for every new formatter; avoid regressions in allocations.
+- A fuzz target, or an extension of one, for functions taking arbitrary
+  strings or the full numeric range. Fuzz properties should check invariants
+  (no panic, valid UTF-8, masking never reveals more than documented).
+- Commit fuzz regression inputs under `testdata/fuzz`.
 
-```bash
-gofmt -l .              # must print nothing
-go mod tidy && git diff --exit-code go.mod
-go vet ./...
-go run honnef.co/go/tools/cmd/staticcheck@latest ./...
-go test -race -cover ./...
+## API naming rules
+
+- The base function takes the natural Go type and uses defaults:
+  `Number(int64)`, `Bytes(uint64)`, `Duration(time.Duration)`.
+- Variants use suffixes: `...WithPrecision`, `...WithOptions`, `...WithLabel`,
+  `...From` (explicit `now`), unit families `...IEC` / `...SI`.
+- Options go in a `...Options` struct whose zero value means the defaults.
+- Return `string`; return `(string, error)` only when a result can be
+  undefined, using the sentinel errors (`ErrUndefined`).
+- Do not panic on any input.
+- Names use the domain term exactly (`MaskCard`, not `HideCC`).
+
+## Commit style
+
+[Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+feat(money): add MoneyCompact
+fix(bytes): round 1023.999 KB up to 1 MB
+docs: clarify Truncate is not for secrets
+test(mask): fuzz MaskEmail for leaks
 ```
 
-For changes to a hot path, include before/after benchmark output in the pull
-request description:
+Use `feat!:` or a `BREAKING CHANGE:` footer for output or API changes.
 
-```bash
-go test -run '^$' -bench . -benchmem -count=5 .
-```
+## Versioning
 
-## Tests
+[Semantic Versioning](https://semver.org/). Output strings are part of the API.
 
-Tests live next to the code they cover: `package readable` for internals,
-`package readable_test` for the public API. Table-driven tests are the norm.
-New exported functions get a runnable `Example` in one of the
-`examples_*_test.go` files — it doubles as documentation, so keep its
-`// Output:` accurate. A bug fix needs a test that fails before the fix and
-passes after it.
+- **v0.x**: minor releases (`v0.2.0`) may contain breaking changes, always
+  listed in `CHANGELOG.md`. Patch releases never break.
+- **v1.0.0 onwards**: no breaking changes to signatures or documented output
+  without a new major version. Bug fixes that change output which contradicted
+  the documentation are allowed in minor releases and called out.
 
-## Commit messages
+Every user-visible change gets a line under `[Unreleased]` in `CHANGELOG.md`.
 
-Conventional Commits, lowercase scope in parentheses:
-
-```
-fix(mask): hide all digits of short phone numbers
-feat(money): add Compact option for large amounts
-docs: document rounding rules
-```
-
-Types in use: `feat`, `fix`, `perf`, `docs`, `test`, `refactor`, `chore`.
-
-## Reporting bugs
-
-Open an issue with:
-
-- the Go version and OS,
-- the exact call and input value,
-- what you expected and what you got.
-
-For anything security-sensitive, follow [SECURITY.md](SECURITY.md) instead of
-opening a public issue.
-
-## Proposing features
-
-Open an issue first and describe the value you need to format. Formatters that
-work for any locale-free input are the easiest to land; features that need
-locale data or external dependencies usually aren't accepted.
-
-By contributing you agree that your work is licensed under the
-[MIT License](LICENSE).
+[golangci-lint]: https://golangci-lint.run/
