@@ -17,6 +17,10 @@ func TestMoney(t *testing.T) {
 		{-150050, "USD", "-1,500.50 USD"},
 		{150000000, "UZS", "150,000,000 UZS"},
 		{1000, "JPY", "1,000 JPY"},
+		{150050, "CHF", "1,500.50 CHF"},
+		{1500500, "BHD", "1,500.500 BHD"},
+		{-5, "KWD", "-0.005 KWD"},
+		{math.MinInt64, "CLF", "-922,337,203,685,477.5808 CLF"},
 		{1234567, "USDT", "1,234,567 USDT"},
 		{150050, "usd", "1,500.50 usd"},
 		{100, "", "100"},
@@ -72,6 +76,9 @@ func TestLookupCurrency(t *testing.T) {
 		{"EUR", true, 2, "€"}, {"GBP", true, 2, "£"}, {"UZS", true, 0, ""},
 		{"RUB", true, 2, "₽"}, {"KZT", true, 2, "₸"}, {"CNY", true, 2, "CN¥"},
 		{"jpy", true, 0, "¥"}, {"KRW", true, 0, "₩"},
+		{"CHF", true, 2, ""}, {"chf", true, 2, ""}, {"BHD", true, 3, ""},
+		{"KWD", true, 3, ""}, {"CLF", true, 4, ""}, {"VND", true, 0, ""},
+		{"XAU", false, 0, ""}, {"BTC", false, 0, ""},
 		{"", false, 0, ""}, {"US", false, 0, ""}, {"USDT", false, 0, ""},
 		{"U$D", false, 0, ""}, {"ＵSD", false, 0, ""}, {"US\x00", false, 0, ""},
 		{"USD\x00", false, 0, ""}, {"\xd5SD", false, 0, ""},
@@ -85,10 +92,10 @@ func TestLookupCurrency(t *testing.T) {
 }
 
 // TestKnownCurrencyExponents enumerates every three-letter code so that a new
-// currency with more than two minor digits, which would overflow
+// currency with more than four minor digits, which would overflow
 // moneyCompactUnits (1e12*10^exp), cannot be added unnoticed.
 func TestKnownCurrencyExponents(t *testing.T) {
-	const maxCompactExponent = 2
+	const maxCompactExponent = 4
 	known := 0
 	for i := range 26 * 26 * 26 {
 		code := string([]byte{byte('A' + i/676), byte('A' + i/26%26), byte('A' + i%26)})
@@ -101,8 +108,8 @@ func TestKnownCurrencyExponents(t *testing.T) {
 			t.Errorf("%s exponent %d outside [0, %d]", code, c.exponent, maxCompactExponent)
 		}
 	}
-	if known != 9 {
-		t.Errorf("known currencies = %d, want 9 (update Money docs)", known)
+	if known < 150 {
+		t.Errorf("known currencies = %d, want the full ISO 4217 list", known)
 	}
 }
 

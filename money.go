@@ -5,9 +5,41 @@ type currencyInfo struct {
 	symbol   string
 }
 
+// iso4217 lists the active ISO 4217 codes by number of minor digits. Every
+// exponent must stay <= 4 so moneyCompactUnits cannot overflow. UZS is listed
+// with 0 digits: the tiyin is not used in practice.
+var iso4217 = [...]string{
+	0: "BIF CLP DJF GNF ISK JPY KMF KRW PYG RWF UGX UYI UZS VND VUV XAF XOF XPF",
+	2: "AED AFN ALL AMD ANG AOA ARS AUD AWG AZN BAM BBD BDT BGN BMD BND BOB BOV " +
+		"BRL BSD BTN BWP BYN BZD CAD CDF CHE CHF CHW CNY COP COU CRC CUP CVE CZK " +
+		"DKK DOP DZD EGP ERN ETB EUR FJD FKP GBP GEL GHS GIP GMD GTQ GYD HKD HNL " +
+		"HTG HUF IDR ILS INR IRR JMD KES KGS KHR KPW KYD KZT LAK LBP LKR LRD LSL " +
+		"MAD MDL MGA MKD MMK MNT MOP MRU MUR MVR MWK MXN MXV MYR MZN NAD NGN NIO " +
+		"NOK NPR NZD PAB PEN PGK PHP PKR PLN QAR RON RSD RUB SAR SBD SCR SDG SEK " +
+		"SGD SHP SLE SOS SRD SSP STN SVC SYP SZL THB TJS TMT TOP TRY TTD TWD TZS " +
+		"UAH USD USN UYU VED VES WST XCD XCG YER ZAR ZMW ZWG",
+	3: "BHD IQD JOD KWD LYD OMR TND",
+	4: "CLF UYW",
+}
+
+// currencies maps an upper-case ISO 4217 code to its minor digits and symbol.
+var currencies = func() map[string]currencyInfo {
+	symbols := map[string]string{
+		"USD": "$", "EUR": "€", "GBP": "£", "RUB": "₽", "KZT": "₸",
+		"CNY": "CN¥", "JPY": "¥", "KRW": "₩",
+	}
+	m := make(map[string]currencyInfo, 200)
+	for exp, codes := range iso4217 {
+		for i := 0; i+3 <= len(codes); i += 4 {
+			code := codes[i : i+3]
+			m[code] = currencyInfo{exp, symbols[code]}
+		}
+	}
+	return m
+}()
+
 // lookupCurrency returns the minor digits and symbol of a known ISO 4217 code,
-// matched ASCII case-insensitively without allocating. Every known exponent
-// must stay <= 2 so moneyCompactUnits cannot overflow.
+// matched ASCII case-insensitively without allocating.
 func lookupCurrency(code string) (currencyInfo, bool) {
 	if len(code) != 3 {
 		return currencyInfo{}, false
@@ -20,27 +52,8 @@ func lookupCurrency(code string) (currencyInfo, bool) {
 		}
 		k[i] = c
 	}
-	switch string(k[:]) {
-	case "USD":
-		return currencyInfo{2, "$"}, true
-	case "EUR":
-		return currencyInfo{2, "€"}, true
-	case "GBP":
-		return currencyInfo{2, "£"}, true
-	case "UZS":
-		return currencyInfo{0, ""}, true
-	case "RUB":
-		return currencyInfo{2, "₽"}, true
-	case "KZT":
-		return currencyInfo{2, "₸"}, true
-	case "CNY":
-		return currencyInfo{2, "CN¥"}, true
-	case "JPY":
-		return currencyInfo{0, "¥"}, true
-	case "KRW":
-		return currencyInfo{0, "₩"}, true
-	}
-	return currencyInfo{}, false
+	c, ok := currencies[string(k[:])]
+	return c, ok
 }
 
 // Money formats amount, expressed in the currency's minor units, with
@@ -48,9 +61,9 @@ func lookupCurrency(code string) (currencyInfo, bool) {
 // units avoids floating-point error. Codes are matched ASCII
 // case-insensitively but printed as given.
 //
-// Known currencies use their conventional number of minor digits: USD, EUR,
-// GBP, RUB, KZT and CNY have 2; UZS, JPY and KRW have 0. Any other code (for
-// example "USDT") is accepted and treated as having 0 minor digits; use
+// Active ISO 4217 codes use their standard number of minor digits (USD and
+// CHF have 2, JPY has 0, BHD has 3), except UZS, which has 0. Any other code
+// (for example "USDT") is accepted and treated as having 0 minor digits; use
 // MoneyWithPrecision to choose explicitly.
 //
 //	Money(150000000, "UZS") // "150,000,000 UZS"

@@ -21,6 +21,9 @@ func TestMoneyCompact(t *testing.T) {
 		{0, "UZS", "0 UZS"},
 		{999_999_999, "UZS", "1B UZS"},
 		{123_456, "USDT", "123.46K USDT"},
+		{150_000_000, "CHF", "1.5M CHF"},
+		{1_500_000, "BHD", "1.5K BHD"},
+		{math.MaxInt64, "CLF", "922.34T CLF"},
 		{math.MinInt64, "USD", "-$92233.72T"},
 		{math.MaxInt64, "UZS", "9223372.04T UZS"},
 	}

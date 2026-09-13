@@ -11,8 +11,10 @@ Amounts are `int64` **minor units** (cents for USD), never floats.
 
 | Minor digits | Currencies |
 |---|---|
-| 2 | USD, EUR, GBP, RUB, KZT, CNY |
-| 0 | UZS, JPY, KRW, any unknown code |
+| 2 | most ISO 4217 codes: USD, EUR, GBP, CHF, RUB, KZT, CNY, … |
+| 3 | BHD, IQD, JOD, KWD, LYD, OMR, TND |
+| 4 | CLF, UYW |
+| 0 | JPY, KRW, VND, UZS, … and any unknown code |
 
 Unknown codes are accepted; pick the digits explicitly with `MoneyWithPrecision`.
 
@@ -34,10 +36,10 @@ with thousands separators followed by the currency code. Using integer
 minor units avoids floating-point error. Codes are matched ASCII
 case-insensitively but printed as given.
 
-Known currencies use their conventional number of minor digits: USD, EUR,
-GBP, RUB, KZT and CNY have 2; UZS, JPY and KRW have 0. Any other code
-(for example "USDT") is accepted and treated as having 0 minor digits;
-use MoneyWithPrecision to choose explicitly.
+Active ISO 4217 codes use their standard number of minor digits (USD and
+CHF have 2, JPY has 0, BHD has 3), except UZS, which has 0. Any other code
+(for example "USDT") is accepted and treated as having 0 minor digits; use
+MoneyWithPrecision to choose explicitly.
 
 ```go
 Money(150000000, "UZS") // "150,000,000 UZS"

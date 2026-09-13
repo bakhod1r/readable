@@ -1,7 +1,7 @@
 package readable
 
 // moneyCompactUnits returns the K/M/B/T units scaled to minor units for a
-// currency with exp minor digits. exp is at most 2 for known currencies, so
+// currency with exp minor digits. exp is at most 4 for known currencies, so
 // 1e12*10^exp fits in uint64.
 func moneyCompactUnits(exp int) [4]unit {
 	pow := pow10[exp]
