@@ -2,6 +2,7 @@ package readable
 
 import (
 	"strconv"
+	"strings"
 	"unicode"
 	"unicode/utf8"
 )
@@ -80,6 +81,10 @@ func pluralAppend(buf []byte, s string) []byte {
 		prev = pluralLower(s[len(s)-2])
 	}
 	switch {
+	case last == 'z' && len(s) >= 3 && len(s) <= 4 && pluralDoublesZ(s):
+		// Short words ending in consonant + vowel + z double it: quiz, whiz, fez.
+		buf = append(buf, s...)
+		return append(buf, suffix("zes", "ZES")...)
 	case last == 's', last == 'x', last == 'z', (last == 'h' && (prev == 'c' || prev == 's')):
 		buf = append(buf, s...)
 		return append(buf, suffix("es", "ES")...)
@@ -108,6 +113,13 @@ func pluralIsVowel(s string) bool {
 		return true
 	}
 	return false
+}
+
+// pluralDoublesZ reports whether s ends in consonant + vowel + "z", with
+// "qu" counting as a consonant.
+func pluralDoublesZ(s string) bool {
+	head := strings.ToLower(s[:len(s)-2])
+	return pluralIsVowel(s[:len(s)-1]) && (!pluralIsVowel(head) || strings.HasSuffix(head, "qu"))
 }
 
 // pluralIsUpper reports whether s has an upper-case letter and no lower-case

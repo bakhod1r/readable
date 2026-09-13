@@ -80,3 +80,13 @@ func ExampleTimeRangeFrom() {
 	// Sep 13, 23:30 → Sep 14, 02:15
 	// Dec 31, 2026, 23:30 → Jan 1, 2027, 02:15
 }
+
+func ExampleParseDuration() {
+	d, err := readable.ParseDuration("3d 12h")
+	fmt.Println(d, err)
+	d, _ = readable.ParseDuration("2 days, 1 hour and 32 minutes")
+	fmt.Println(d)
+	// Output:
+	// 84h0m0s <nil>
+	// 49h32m0s
+}

@@ -3,6 +3,7 @@ package readable
 import (
 	"math"
 	"math/big"
+	"regexp"
 	"strconv"
 	"strings"
 	"testing"
@@ -162,5 +163,59 @@ func FuzzNumberFloat(f *testing.F) {
 			t.Fatalf("NumberFloat(%v) = %q, want %q", x, got, want)
 		}
 		checkFuzzOutput(t, func() string { return Percent(x) })
+	})
+}
+
+func FuzzParseBytes(f *testing.F) {
+	for _, s := range []string{"1.5 KB", "1 KiB", "1,024 bytes", "-1 B", "15.99 EB", "..", ",5"} {
+		f.Add(s)
+	}
+	f.Fuzz(func(t *testing.T, s string) {
+		if n, err := ParseBytes(s); err == nil {
+			if back, err := ParseBytes(BytesIEC(n)); err != nil || absDiff(back, n) > n/200+1 {
+				t.Fatalf("round trip %q: %d -> %q -> %d, %v", s, n, BytesIEC(n), back, err)
+			}
+		}
+		_, _ = ParseBytesSI(s)
+		_, _ = ParseNumber(s)
+	})
+}
+
+func absDiff(a, b uint64) uint64 {
+	if a > b {
+		return a - b
+	}
+	return b - a
+}
+
+func FuzzParseDuration(f *testing.F) {
+	for _, s := range []string{"3d 12h", "2 days, 1 hour and 32 minutes", "350µs", "-1m 30s", "and", "1e9h"} {
+		f.Add(s)
+	}
+	f.Fuzz(func(t *testing.T, s string) {
+		d, err := ParseDuration(s)
+		if err != nil {
+			return
+		}
+		if back, err := ParseDuration(Duration(d)); err != nil || (d >= time.Second || d <= -time.Second) && (back-d)/time.Second != 0 {
+			t.Fatalf("round trip %q: %v -> %q -> %v, %v", s, d, Duration(d), back, err)
+		}
+	})
+}
+
+var fuzzLeakedSecret = regexp.MustCompile(`(?i)\b(?:password|secret|token)=[^*\s&"']`)
+
+func FuzzRedact(f *testing.F) {
+	for _, s := range []string{"mail a.b@c.io card 4111 1111 1111 1111", "password=x Bearer y", "+998 90 123 45 67 1.2.3.4"} {
+		f.Add(s)
+	}
+	f.Fuzz(func(t *testing.T, s string) {
+		out := Redact(s)
+		if utf8.ValidString(s) && !utf8.ValidString(out) {
+			t.Fatalf("invalid UTF-8: %q -> %q", s, out)
+		}
+		if fuzzLeakedSecret.MatchString(out) {
+			t.Fatalf("secret left in %q -> %q", s, out)
+		}
 	})
 }

@@ -8,6 +8,25 @@ Output strings are part of the public API.
 
 ## [Unreleased]
 
+### Added
+
+- **Parsing**: `ParseBytes`, `ParseBytesSI`, `ParseNumber`, `ParseDuration`
+  read formatted values back; errors wrap `ErrSyntax`, `ErrUnit`, `ErrRange`.
+- **Templates**: `FuncMap` for `text/template` and `html/template`.
+- **Redaction**: `Redact` masks emails, Luhn-valid cards, phones, IPv4,
+  JWTs, vendor API keys and `key=value` secrets in free text; `RedactAttr`
+  plugs it into `log/slog`.
+- **Time**: `ETA`, `Calendar`.
+- **Localisation**: `Locale` (`English`, `Uzbek`, `Russian`) with
+  `RelativeTime`, `RelativeTimeFrom`, `DurationLong`; `PluralRU`.
+- **Structs**: `Format` with `readable:"..."` field tags.
+- **Text**: `Roman`, `SI`, `Initials`, `Slug`, `Ellipsis`.
+- **CLI**: `cmd/readable` (`go install github.com/bakhod1r/readable/cmd/readable@latest`).
+
+### Fixed
+
+- `Plural("quiz")` returns "quizzes" (was "quizes").
+
 ## [0.1.0] - 2026-09-13
 
 Initial release. Standard library only, Go 1.24+.

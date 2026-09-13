@@ -125,3 +125,73 @@ BoolLabel returns trueLabel if b is true, otherwise falseLabel.
 ```go
 BoolLabel(false, "Enabled", "Disabled") // "Disabled"
 ```
+
+## Initials
+
+```go
+func Initials(name string) string
+```
+
+Initials returns the upper-case first letter of up to the first two words of
+name.
+
+```go
+Initials("john ronald tolkien") // "JR"
+Initials("  ")                  // ""
+```
+
+## Slug
+
+```go
+func Slug(s string) string
+```
+
+Slug turns s into a lower-case URL slug of ASCII letters and digits joined
+by single "-". Other characters separate words and are dropped.
+
+```go
+Slug("Hello, World! 2026") // "hello-world-2026"
+```
+
+## Ellipsis
+
+```go
+func Ellipsis(s string, max int) string
+```
+
+Ellipsis shortens s to at most max runes by replacing its middle with "…".
+Strings that fit are returned unchanged; max < 1 returns "".
+
+```go
+Ellipsis("/usr/local/share/readable/docs", 16) // "/usr/loc…le/docs"
+```
+
+## Roman
+
+```go
+func Roman(n int) string
+```
+
+Roman formats n as an upper-case Roman numeral. Values outside 1–3999 have
+no standard form and return "".
+
+```go
+Roman(2026) // "MMXXVI"
+Roman(0)    // ""
+```
+
+## SI
+
+```go
+func SI(v float64, unit string) string
+```
+
+SI formats v with a metric prefix (n, µ, m, k, M, G, T) for unit, with up to
+DefaultPrecision trimmed fraction digits. Values below 1n stay in n; zero,
+NaN and infinities have no prefix.
+
+```go
+SI(0.0012, "A") // "1.2 mA"
+SI(4700, "Ω")   // "4.7 kΩ"
+SI(0, "V")      // "0 V"
+```

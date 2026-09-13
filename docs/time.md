@@ -386,3 +386,89 @@ different years        "Dec 31, 2026, 23:30 → Jan 1, 2027, 02:15"
 
 The year is shown on both dates when start and end fall in different years
 or when either differs from now's year. The en dash is U+2013.
+
+## ParseDuration
+
+```go
+func ParseDuration(s string) (time.Duration, error)
+```
+
+ParseDuration parses a duration as printed by Duration, DurationLong,
+DurationNatural or Latency: "3d 12h", "2h30m", "1.5ms", "350µs", "2 days,
+1 hour and 32 minutes". Components are a number and a unit (ns, µs/us, ms,
+s, m, h, d or their English names, case-insensitive), separated by optional
+spaces, commas or "and". A day is 24 hours. A leading "-" negates the whole
+duration. Results are rounded to the nearest nanosecond, half away from
+zero.
+
+```go
+ParseDuration("3h 25m") // 3h25m0s, nil
+ParseDuration("1.5ms")  // 1.5ms, nil
+```
+
+Errors wrap ErrSyntax, ErrUnit or ErrRange (outside time.Duration).
+
+## ETA
+
+```go
+func ETA(done, total int64, elapsed time.Duration) string
+```
+
+ETA estimates the time left for a task that has done of total units after
+elapsed, assuming a constant rate, as "~3m left". The estimate keeps the
+largest unit only and is at least one second. It returns "done" when done
+>= total > 0 and "" when there is no rate yet (done, total or elapsed not
+positive).
+
+```go
+ETA(25, 100, time.Minute)   // "~3m left"
+ETA(100, 100, time.Minute)  // "done"
+ETA(0, 100, time.Minute)    // ""
+```
+
+## Calendar
+
+```go
+func Calendar(now, t time.Time) string
+```
+
+Calendar describes t for schedules and feeds, relative to the calendar day
+of now in t's location:
+
+```
+same day          "today 14:30"
+previous day      "yesterday 14:30"
+next day          "tomorrow 14:30"
+within 6 days     "Monday 14:30"
+same year         "Sep 2, 14:30"
+otherwise         "Sep 2, 2025, 14:30"
+```
+
+## Locale
+
+```go
+type Locale string
+```
+
+Locale selects the language of the localised formatters. Unknown locales
+fall back to English.
+
+const English Locale = "en" ...
+func (l Locale) DurationLong(d time.Duration) string
+func (l Locale) RelativeTime(t time.Time) string
+func (l Locale) RelativeTimeFrom(now, t time.Time) string
+
+## PluralRU
+
+```go
+func PluralRU(n uint64, one, few, many string) string
+```
+
+PluralRU picks the Russian plural form for n: one (1, 21, 101...), few (2–4,
+22–24...) or many (0, 5–20, 25–30...).
+
+```go
+PluralRU(21, "файл", "файла", "файлов") // "файл"
+PluralRU(3, "файл", "файла", "файлов")  // "файла"
+PluralRU(11, "файл", "файла", "файлов") // "файлов"
+```

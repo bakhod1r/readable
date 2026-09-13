@@ -183,3 +183,36 @@ digits, rounded half up. Rates of a quadrillion bps or more stay in Tbps.
 ```go
 Bandwidth(125000000) // "125 Mbps"
 ```
+
+## ParseBytes
+
+```go
+func ParseBytes(s string) (uint64, error)
+```
+
+ParseBytes parses a byte size such as "1.5 KB", "512B", "2 GiB" or "1,024
+bytes". KB, MB, GB, TB, PB and EB are 1024-based, as printed by Bytes;
+the IEC forms KiB...EiB are accepted too. Units are case-insensitive,
+the space before them is optional and a bare number is bytes. Results are
+rounded to the nearest byte, half up.
+
+```go
+ParseBytes("1.5 KB") // 1536, nil
+ParseBytes("1 MiB")  // 1048576, nil
+```
+
+Errors wrap ErrSyntax, ErrUnit or ErrRange (negative or above MaxUint64).
+
+## ParseBytesSI
+
+```go
+func ParseBytesSI(s string) (uint64, error)
+```
+
+ParseBytesSI is like ParseBytes but reads kB, MB, GB, TB, PB and EB as
+1000-based, as printed by BytesSI. KiB...EiB stay 1024-based.
+
+```go
+ParseBytesSI("1 kB")  // 1000, nil
+ParseBytesSI("1 KiB") // 1024, nil
+```
