@@ -124,7 +124,7 @@ func TestLocale(t *testing.T) {
 		{Russian.RelativeTimeFrom(now, ago(800*day)), "2 года назад"},
 		{Russian.RelativeTimeFrom(now, now), "только что"},
 		{English.RelativeTimeFrom(now, ago(time.Hour)), "1 hour ago"},
-		{Locale("de").RelativeTimeFrom(now, ago(time.Hour)), "1 hour ago"},
+		{Locale("xx").RelativeTimeFrom(now, ago(time.Hour)), "1 hour ago"},
 		{Uzbek.DurationLong(49*time.Hour + 32*time.Minute), "2 kun, 1 soat, 32 daqiqa"},
 		{Russian.DurationLong(49*time.Hour + 32*time.Minute + 5*time.Second), "2 дня, 1 час, 32 минуты, 5 секунд"},
 		{Russian.DurationLong(-250 * time.Millisecond), "-250 миллисекунд"},

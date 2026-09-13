@@ -18,7 +18,7 @@ PAGES = [
      ["Duration", "DurationShort", "DurationLong", "DurationWithOptions", "DurationOptions",
       "DurationNatural", "DurationApprox", "Latency", "RelativeTime", "RelativeTimeFrom",
       "Date", "DateFrom", "Time", "TimeFrom", "TimeRange", "TimeRangeFrom", "ParseDuration",
-      "ETA", "Calendar", "Locale", "PluralRU"]),
+      "ETA", "Calendar", "Locale", "ParseLocale", "PluralRU"]),
     ("money", "Money", 6,
      "Amounts are `int64` **minor units** (cents for USD), never floats.\n\n"
      "| Minor digits | Currencies |\n|---|---|\n"

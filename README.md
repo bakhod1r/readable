@@ -66,6 +66,9 @@ slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{ReplaceAttr: readab
 
 readable.Uzbek.RelativeTimeFrom(now, now.Add(-3*time.Minute)) // "3 daqiqa oldin"
 readable.Russian.DurationLong(49*time.Hour + 32*time.Minute) // "2 дня, 1 час, 32 минуты"
+readable.German.RelativeTimeFrom(now, now.Add(-72*time.Hour)) // "vor 3 Tagen"
+readable.Russian.List([]string{"Go", "Redis", "Kafka"})       // "Go, Redis и Kafka"
+readable.Turkish.Percent(0.1534)                              // "%15,34"
 readable.ETA(25, 100, time.Minute)                            // "~3m left"
 readable.Format(User{Email: "john.doe@gmail.com", Quota: 1536}) // tags: `readable:"mask=email"`, `readable:"bytes"`
 readable.Roman(2026) // "MMXXVI"

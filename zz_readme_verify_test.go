@@ -3,6 +3,7 @@ package readable_test
 import (
 	"errors"
 	"math"
+	"slices"
 	"testing"
 	"time"
 
@@ -62,9 +63,11 @@ func TestZZReadme(t *testing.T) {
 		{r.Uzbek.RelativeTimeFrom(now, now.Add(-3*time.Minute)), "3 daqiqa oldin"},
 		{r.Russian.DurationLong(49*time.Hour + 32*time.Minute), "2 дня, 1 час, 32 минуты"},
 		{r.ETA(25, 100, time.Minute), "~3m left"}, {r.Roman(2026), "MMXXVI"},
+		{r.German.RelativeTimeFrom(now, now.Add(-72*time.Hour)), "vor 3 Tagen"},
+		{r.Russian.List([]string{"Go", "Redis", "Kafka"}), "Go, Redis и Kafka"},
+		{r.Turkish.Percent(0.1534), "%15,34"},
 	}
-	cases = append(cases, extra...)
-	for i, c := range cases {
+	for i, c := range slices.Concat(cases, extra) {
 		if c[0] != c[1] {
 			t.Errorf("case %d: got %q want %q", i, c[0], c[1])
 		}

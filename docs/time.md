@@ -451,12 +451,33 @@ type Locale string
 ```
 
 Locale selects the language of the localised formatters. Unknown locales
-fall back to English.
+fall back to English. Use ParseLocale to map a BCP 47 tag such as "ru-RU".
 
 const English Locale = "en" ...
+func ParseLocale(tag string) (Locale, bool)
 func (l Locale) DurationLong(d time.Duration) string
+func (l Locale) Int(n int64) string
+func (l Locale) List(items []string) string
+func (l Locale) Percent(ratio float64) string
+func (l Locale) Plural(n uint64, forms ...string) string
 func (l Locale) RelativeTime(t time.Time) string
 func (l Locale) RelativeTimeFrom(now, t time.Time) string
+
+## ParseLocale
+
+```go
+func ParseLocale(tag string) (Locale, bool)
+```
+
+ParseLocale maps a BCP 47 language tag to a supported Locale, matching
+case-insensitively and accepting '_' for '-'. Region subtags are ignored;
+"uz-Cyrl" selects UzbekCyrillic. Unsupported tags return English, false.
+
+```go
+ParseLocale("ru-RU")   // Russian, true
+ParseLocale("uz_Cyrl") // UzbekCyrillic, true
+ParseLocale("xx")      // English, false
+```
 
 ## PluralRU
 
