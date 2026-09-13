@@ -8,6 +8,15 @@ Output strings are part of the public API.
 
 ## [Unreleased]
 
+### Added
+
+- **Append APIs**: `AppendNumber`, `AppendNumberFloat`, `AppendBytes`,
+  `AppendBytesIEC`, `AppendBytesSI`, `AppendDuration`, `AppendPercent`,
+  `AppendMoney`, `AppendMoneySymbol`, `AppendOrdinal` — byte-identical to
+  their string counterparts, 0 allocs/op with a pre-sized buffer.
+- **Numbers**: `Range` (`"1.2K–1.8K"`).
+- **Types**: `ByteSize` and `Percentage` implementing `fmt.Stringer`.
+
 ## [0.2.0] - 2026-09-13
 
 ### Added

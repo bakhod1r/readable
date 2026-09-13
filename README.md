@@ -47,6 +47,20 @@ readable.MaskEmail("john.doe@gmail.com")        // j***@gmail.com
 | [Masking & IDs](https://bakhod1r.github.io/readable/masking/) | `MaskEmail`, `MaskPhone`, `MaskCard`, `MaskToken`, `MaskIP`, `ID`, `Truncate` |
 | [Parsing & templates](https://bakhod1r.github.io/readable/templates/) | `ParseBytes`, `ParseNumber`, `ParseDuration`, `FuncMap` |
 
+### Zero-allocation append and Stringer types
+
+```go
+buf := make([]byte, 0, 64)
+buf = readable.AppendNumber(buf, 1234567) // "1.23M", 0 allocs/op
+buf = readable.AppendDuration(buf, 5*time.Minute)
+// also AppendNumberFloat, AppendBytes, AppendBytesIEC, AppendBytesSI,
+// AppendPercent, AppendMoney, AppendMoneySymbol, AppendOrdinal
+
+readable.Range(1200, 1800)                // "1.2K–1.8K"
+fmt.Println(readable.ByteSize(1536))      // 1.5 KB
+fmt.Println(readable.Percentage(0.9234))  // 92.34%
+```
+
 ### Parsing and templates
 
 ```go
