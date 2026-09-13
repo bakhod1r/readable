@@ -8,6 +8,8 @@ Output strings are part of the public API.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-09-13
+
 ### Added
 
 - **Parsing**: `ParseBytes`, `ParseBytesSI`, `ParseNumber`, `ParseDuration`
@@ -55,5 +57,6 @@ Initial release. Standard library only, Go 1.24+.
 - **Masking & IDs**: `Mask`, `MaskCard`, `MaskEmail`, `MaskPhone`, `MaskIP`,
   `MaskToken`, `ID`, `Hash`, `ShortUUID`.
 
-[Unreleased]: https://github.com/bakhod1r/readable/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/bakhod1r/readable/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/bakhod1r/readable/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/bakhod1r/readable/releases/tag/v0.1.0
