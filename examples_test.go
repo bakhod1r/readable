@@ -112,8 +112,8 @@ func ExampleDuration() {
 	// 125ms
 }
 
-func ExampleDurationWithPrecision() {
-	fmt.Println(readable.DurationWithPrecision(3*24*time.Hour+12*time.Hour+32*time.Minute, 2))
+func ExampleDurationWithOptions() {
+	fmt.Println(readable.DurationWithOptions(3*24*time.Hour+12*time.Hour+32*time.Minute, readable.DurationOptions{Units: 2}))
 	// Output: 3d 12h
 }
 
@@ -122,8 +122,8 @@ func ExampleDurationLong() {
 	// Output: 3 hours, 25 minutes, 12 seconds
 }
 
-func ExampleDurationLongWithPrecision() {
-	fmt.Println(readable.DurationLongWithPrecision(3*time.Hour+25*time.Minute+12*time.Second, 2))
+func ExampleDurationWithOptions_long() {
+	fmt.Println(readable.DurationWithOptions(3*time.Hour+25*time.Minute+12*time.Second, readable.DurationOptions{Units: 2, Long: true}))
 	// Output: 3 hours, 25 minutes
 }
 

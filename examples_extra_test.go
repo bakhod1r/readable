@@ -2,7 +2,6 @@ package readable_test
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/bakhod1r/readable"
 )
@@ -51,21 +50,6 @@ func ExampleRequestRate() {
 func ExamplePerMinute() {
 	fmt.Println(readable.PerMinute(1200, "req"))
 	// Output: 1.2K req/min
-}
-
-func ExampleLogDuration() {
-	fmt.Println(readable.LogDuration(1532 * time.Millisecond))
-	// Output: 1.532s
-}
-
-func ExampleLogBytes() {
-	fmt.Println(readable.LogBytes(12345678))
-	// Output: 11.77MiB
-}
-
-func ExampleLogNumber() {
-	fmt.Println(readable.LogNumber(1234567))
-	// Output: 1234567
 }
 
 func ExampleProgress() {

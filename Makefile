@@ -4,7 +4,7 @@ PKG           ?= ./...
 FUZZTIME      ?= 30s
 COVERPROFILE  ?= coverage.out
 GOLANGCI_LINT ?= golangci-lint
-GOVULNCHECK   ?= $(GO) run golang.org/x/vuln/cmd/govulncheck@latest
+GOVULNCHECK   ?= $(GO) run golang.org/x/vuln/cmd/govulncheck@v1.8.0
 
 .DEFAULT_GOAL := check
 .PHONY: check fmt fmt-check vet lint test cover fuzz bench tidy vuln clean docs docs-check help

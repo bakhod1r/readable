@@ -55,8 +55,8 @@ func FuzzDuration(f *testing.F) {
 		d := time.Duration(n)
 		checkFuzzOutput(t, func() string { return Duration(d) })
 		checkFuzzOutput(t, func() string { return DurationLong(d) })
-		checkFuzzOutput(t, func() string { return DurationWithPrecision(d, u) })
-		checkFuzzOutput(t, func() string { return DurationLongWithPrecision(d, u) })
+		checkFuzzOutput(t, func() string { return DurationWithOptions(d, DurationOptions{Units: u}) })
+		checkFuzzOutput(t, func() string { return DurationWithOptions(d, DurationOptions{Units: u, Long: true}) })
 	})
 }
 

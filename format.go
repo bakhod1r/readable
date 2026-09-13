@@ -118,13 +118,13 @@ func appendFraction(buf []byte, frac uint64, p int, fixed bool, dec string) []by
 	return append(buf, digits[:p]...)
 }
 
-// appendGrouped appends u with sep between groups of three digits.
-func appendGrouped(buf []byte, u uint64, sep byte) []byte {
+// appendGrouped appends u with ',' between groups of three digits.
+func appendGrouped(buf []byte, u uint64) []byte {
 	var tmp [20]byte
 	s := strconv.AppendUint(tmp[:0], u, 10)
 	for i, c := range s {
 		if i > 0 && (len(s)-i)%3 == 0 {
-			buf = append(buf, sep)
+			buf = append(buf, ',')
 		}
 		buf = append(buf, c)
 	}

@@ -49,15 +49,26 @@ func Duration(d time.Duration) string {
 	return formatDuration(d, 0, false)
 }
 
-// DurationWithPrecision is like Duration but shows at most units components,
-// counted from the largest non-zero one; smaller components are truncated,
-// never rounded. Zero components inside that window still count towards
-// units. units <= 0 shows all components. It has no effect below one second.
+// DurationOptions controls DurationWithOptions.
+type DurationOptions struct {
+	// Units is the maximum number of components shown, counted from the
+	// largest non-zero one; smaller components are truncated, never rounded.
+	// Zero components inside that window still count. Units <= 0 shows all
+	// components. It has no effect below one second.
+	Units int
+	// Long uses full unit names separated by ", ", as in DurationLong.
+	Long bool
+}
+
+// DurationWithOptions is like Duration, or DurationLong when opts.Long is
+// set, limited to opts.Units components.
 //
-//	DurationWithPrecision(3*24*time.Hour+12*time.Hour+32*time.Minute, 2) // "3d 12h"
-//	DurationWithPrecision(time.Hour+5*time.Second, 2)                    // "1h"
-func DurationWithPrecision(d time.Duration, units int) string {
-	return formatDuration(d, units, false)
+//	DurationWithOptions(3*24*time.Hour+12*time.Hour+32*time.Minute, DurationOptions{Units: 2}) // "3d 12h"
+//	DurationWithOptions(time.Hour+5*time.Second, DurationOptions{Units: 2})                    // "1h"
+//	DurationWithOptions(3*time.Hour+25*time.Minute+12*time.Second, DurationOptions{Units: 2, Long: true})
+//	// "3 hours, 25 minutes"
+func DurationWithOptions(d time.Duration, opts DurationOptions) string {
+	return formatDuration(d, opts.Units, opts.Long)
 }
 
 // DurationLong is like Duration but uses full unit names, pluralised unless
@@ -67,14 +78,6 @@ func DurationWithPrecision(d time.Duration, units int) string {
 //	// "3 hours, 25 minutes, 12 seconds"
 func DurationLong(d time.Duration) string {
 	return formatDuration(d, 0, true)
-}
-
-// DurationLongWithPrecision is DurationLong limited to units components, as
-// in DurationWithPrecision.
-//
-//	DurationLongWithPrecision(3*time.Hour+25*time.Minute+12*time.Second, 2) // "3 hours, 25 minutes"
-func DurationLongWithPrecision(d time.Duration, units int) string {
-	return formatDuration(d, units, true)
 }
 
 func formatDuration(d time.Duration, units int, long bool) string {

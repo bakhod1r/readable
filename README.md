@@ -45,7 +45,6 @@ readable.MaskEmail("john.doe@gmail.com")        // j***@gmail.com
 | [Percent & rates](https://bakhod1r.github.io/readable/percent/) | `Percent`, `PercentChange`, `Progress`, `ProgressBar`, `Rate` |
 | [Text](https://bakhod1r.github.io/readable/text/) | `Humanize`, `Enum`, `List`, `Bool` |
 | [Masking & IDs](https://bakhod1r.github.io/readable/masking/) | `MaskEmail`, `MaskPhone`, `MaskCard`, `MaskToken`, `MaskIP`, `ID`, `Truncate` |
-| [Logs](https://bakhod1r.github.io/readable/logs/) | `LogDuration`, `LogBytes`, `LogNumber` |
 
 ## Why readable
 

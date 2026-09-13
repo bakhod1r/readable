@@ -50,22 +50,6 @@ DurationNatural and DurationApprox.
 DurationShort(90 * time.Second) // "1m 30s"
 ```
 
-## DurationWithPrecision
-
-```go
-func DurationWithPrecision(d time.Duration, units int) string
-```
-
-DurationWithPrecision is like Duration but shows at most units components,
-counted from the largest non-zero one; smaller components are truncated,
-never rounded. Zero components inside that window still count towards units.
-units <= 0 shows all components. It has no effect below one second.
-
-```go
-DurationWithPrecision(3*24*time.Hour+12*time.Hour+32*time.Minute, 2) // "3d 12h"
-DurationWithPrecision(time.Hour+5*time.Second, 2)                    // "1h"
-```
-
 ## DurationLong
 
 ```go
@@ -80,18 +64,37 @@ DurationLong(3*time.Hour + 25*time.Minute + 12*time.Second)
 // "3 hours, 25 minutes, 12 seconds"
 ```
 
-## DurationLongWithPrecision
+## DurationWithOptions
 
 ```go
-func DurationLongWithPrecision(d time.Duration, units int) string
+func DurationWithOptions(d time.Duration, opts DurationOptions) string
 ```
 
-DurationLongWithPrecision is DurationLong limited to units components,
-as in DurationWithPrecision.
+DurationWithOptions is like Duration, or DurationLong when opts.Long is set,
+limited to opts.Units components.
 
 ```go
-DurationLongWithPrecision(3*time.Hour+25*time.Minute+12*time.Second, 2) // "3 hours, 25 minutes"
+DurationWithOptions(3*24*time.Hour+12*time.Hour+32*time.Minute, DurationOptions{Units: 2}) // "3d 12h"
+DurationWithOptions(time.Hour+5*time.Second, DurationOptions{Units: 2})                    // "1h"
+DurationWithOptions(3*time.Hour+25*time.Minute+12*time.Second, DurationOptions{Units: 2, Long: true})
+// "3 hours, 25 minutes"
 ```
+
+## DurationOptions
+
+```go
+type DurationOptions struct {
+	// Units is the maximum number of components shown, counted from the
+	// largest non-zero one; smaller components are truncated, never rounded.
+	// Zero components inside that window still count. Units <= 0 shows all
+	// components. It has no effect below one second.
+	Units int
+	// Long uses full unit names separated by ", ", as in DurationLong.
+	Long bool
+}
+```
+
+DurationOptions controls DurationWithOptions.
 
 ## DurationNatural
 

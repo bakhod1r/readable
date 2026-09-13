@@ -15,13 +15,15 @@ PAGES = [
      "Durations at different lengths, latency, relative times, dates and ranges.\n\n"
      "`RelativeTime`, `Date`, `Time` and `TimeRange` read `time.Now`. Each has a "
      "`...From(now, ...)` twin that takes an explicit `now` — use it in tests.",
-     ["Duration", "DurationShort", "DurationWithPrecision", "DurationLong", "DurationLongWithPrecision",
+     ["Duration", "DurationShort", "DurationLong", "DurationWithOptions", "DurationOptions",
       "DurationNatural", "DurationApprox", "Latency", "RelativeTime", "RelativeTimeFrom",
       "Date", "DateFrom", "Time", "TimeFrom", "TimeRange", "TimeRangeFrom"]),
     ("money", "Money", 6,
      "Amounts are `int64` **minor units** (cents for USD), never floats.\n\n"
-     "| Minor digits | Currencies |\n|---|---|\n| 2 | USD, EUR, GBP, RUB, KZT, CNY |\n"
-     "| 0 | UZS, JPY, KRW, any unknown code |\n\n"
+     "| Minor digits | Currencies |\n|---|---|\n"
+     "| 2 | most ISO 4217 codes: USD, EUR, GBP, CHF, RUB, KZT, CNY, … |\n"
+     "| 3 | BHD, IQD, JOD, KWD, LYD, OMR, TND |\n| 4 | CLF, UYW |\n"
+     "| 0 | JPY, KRW, VND, UZS, … and any unknown code |\n\n"
      "Unknown codes are accepted; pick the digits explicitly with `MoneyWithPrecision`.",
      ["Money", "MoneySymbol", "MoneyWithPrecision", "MoneyCompact", "MoneyAccounting", "MoneyChange"]),
     ("percent", "Percent, progress & rates", 7,
@@ -45,9 +47,6 @@ PAGES = [
      "they deliberately reveal leading and trailing characters.",
      ["MaskEmail", "MaskPhone", "MaskCard", "MaskToken", "MaskIP", "Mask",
       "ID", "Hash", "ShortUUID", "Truncate"]),
-    ("logs", "Logs", 10,
-     "Compact, space-free, machine-stable forms for structured logs.",
-     ["LogDuration", "LogBytes", "LogNumber"]),
 ]
 
 

@@ -28,7 +28,7 @@ func TestZZReadme(t *testing.T) {
 		{r.Throughput(125_000_000), "119.21 MB/s"}, {r.ThroughputIEC(125_000_000), "119.21 MiB/s"}, {r.Bandwidth(125_000_000), "125 Mbps"},
 		{r.BytesRate(5662310, time.Second), "5.4 MB/s"}, {r.Rate(125000, time.Second), "125K/s"}, {r.RateWithLabel(1200, time.Second, "req"), "1.2K req/s"},
 		{r.RequestRate(15234), "15.23K req/s"}, {r.PerMinute(1200, "req"), "1.2K req/min"},
-		{r.Duration(d), "2d 1h 32m"}, {r.DurationWithPrecision(d, 2), "2d 1h"}, {r.DurationLong(d), "2 days, 1 hour, 32 minutes"},
+		{r.Duration(d), "2d 1h 32m"}, {r.DurationWithOptions(d, r.DurationOptions{Units: 2}), "2d 1h"}, {r.DurationLong(d), "2 days, 1 hour, 32 minutes"},
 		{r.DurationNatural(d), "2 days, 1 hour and 32 minutes"}, {r.DurationApprox(d), "about 2 days"}, {r.Latency(1500 * time.Microsecond), "1.5ms"},
 		{r.RelativeTimeFrom(now, now.Add(-2*time.Hour)), "2 hours ago"}, {r.RelativeTimeFrom(now, now.Add(72*time.Hour)), "in 3 days"},
 		{r.DateFrom(now, now.Add(-24*time.Hour)), "Yesterday"}, {r.TimeFrom(now, now.Add(-2*time.Hour)), "2 hours ago · Sep 13, 07:20"},
@@ -43,7 +43,6 @@ func TestZZReadme(t *testing.T) {
 		{r.MaskToken("sk_live_abc123456789"), "sk_live_****6789"}, {r.MaskToken("sk_live_1234"), "****"}, {r.MaskIP("192.168.1.42"), "192.168.*.*"},
 		{r.Mask("1234567890", 2, 2), "12******90"}, {r.ID(987654321234567), "987-654-321-234-567"},
 		{r.ShortUUID("550e8400-e29b-41d4-a716-446655440000"), "550e...0000"}, {r.Truncate("a8f91234abcd", 4, 2), "a8f9...cd"},
-		{r.LogDuration(1532 * time.Millisecond), "1.532s"}, {r.LogBytes(12345678), "11.77MiB"}, {r.LogNumber(1234567), "1234567"},
 		// design notes / guarantees
 		{r.NumberWithPrecision(1234567, 20), "1.234567M"}, {r.Money(100, "XYZ"), "100 XYZ"}, {r.MaskEmail("not-an-email"), "***"},
 		{r.MaskPhone("12345"), "*****"}, {r.MaskPhone("12a45678"), "***"}, {r.MaskCard("1234"), "****"}, {r.MaskIP("nope"), "***"}, {r.Mask("secret", 3, 3), "******"},
