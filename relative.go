@@ -34,33 +34,11 @@ const relativeJustNowSeconds = 5
 // 292 years reports "292 years ago" or "in 292 years".
 // Time zones do not affect the result; only the instants are compared.
 func RelativeTimeFrom(now, t time.Time) string {
-	diff := t.Sub(now)
-	future := diff > 0
-	_, abs := absInt64(int64(diff))
-	secs := abs / uint64(time.Second)
-	days := secs / secondsPerDay
-
-	var n uint64
-	var name string
-	switch {
-	case secs < relativeJustNowSeconds:
+	n, unit, future, justNow := relativeParts(now, t)
+	if justNow {
 		return "just now"
-	case secs < secondsPerMinute:
-		n, name = secs, "second"
-	case secs < secondsPerHour:
-		n, name = secs/secondsPerMinute, "minute"
-	case secs < secondsPerDay:
-		n, name = secs/secondsPerHour, "hour"
-	case days < daysPerWeek:
-		n, name = days, "day"
-	case days < daysPerMonth:
-		n, name = days/daysPerWeek, "week"
-	case days < daysPerYear:
-		n, name = days/daysPerMonth, "month"
-	default:
-		n, name = days/daysPerYear, "year"
 	}
-
+	name := relativeUnitNames[unit]
 	var arr [32]byte
 	buf := arr[:0]
 	if future {
@@ -76,4 +54,44 @@ func RelativeTimeFrom(now, t time.Time) string {
 		buf = append(buf, " ago"...)
 	}
 	return string(buf)
+}
+
+// Unit indexes returned by relativeParts.
+const (
+	relSecond = iota
+	relMinute
+	relHour
+	relDay
+	relWeek
+	relMonth
+	relYear
+)
+
+var relativeUnitNames = [...]string{"second", "minute", "hour", "day", "week", "month", "year"}
+
+// relativeParts splits t - now into a truncated count, a unit index
+// (relSecond...relYear) and a direction, as documented on RelativeTimeFrom.
+func relativeParts(now, t time.Time) (n uint64, unit int, future, justNow bool) {
+	diff := t.Sub(now)
+	future = diff > 0
+	_, abs := absInt64(int64(diff))
+	secs := abs / uint64(time.Second)
+	days := secs / secondsPerDay
+	switch {
+	case secs < relativeJustNowSeconds:
+		return 0, relSecond, future, true
+	case secs < secondsPerMinute:
+		return secs, relSecond, future, false
+	case secs < secondsPerHour:
+		return secs / secondsPerMinute, relMinute, future, false
+	case secs < secondsPerDay:
+		return secs / secondsPerHour, relHour, future, false
+	case days < daysPerWeek:
+		return days, relDay, future, false
+	case days < daysPerMonth:
+		return days / daysPerWeek, relWeek, future, false
+	case days < daysPerYear:
+		return days / daysPerMonth, relMonth, future, false
+	}
+	return days / daysPerYear, relYear, future, false
 }

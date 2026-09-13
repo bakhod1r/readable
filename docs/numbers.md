@@ -174,3 +174,21 @@ Plural(2, "match") // "matches"
 Plural(2, "city")  // "cities"
 Plural(2, "BOX")   // "BOXES"
 ```
+
+## ParseNumber
+
+```go
+func ParseNumber(s string) (int64, error)
+```
+
+ParseNumber parses a compact number as printed by Number: "12.5K", "1.23M",
+"-1.5B", "2T". Plain integers with "," group separators such as "1,234,567"
+are accepted. Suffixes are case-insensitive and may follow a space. Results
+are rounded to the nearest integer, half away from zero.
+
+```go
+ParseNumber("12.5K")     // 12500, nil
+ParseNumber("1,234,567") // 1234567, nil
+```
+
+Errors wrap ErrSyntax, ErrUnit or ErrRange (outside int64).

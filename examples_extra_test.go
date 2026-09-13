@@ -1,6 +1,7 @@
 package readable_test
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/bakhod1r/readable"
@@ -65,4 +66,47 @@ func ExampleProgressBar() {
 func ExampleNumberWords() {
 	fmt.Println(readable.NumberWords(1234567))
 	// Output: 1.23 million
+}
+
+func ExampleParseBytes() {
+	n, err := readable.ParseBytes("1.5 KB")
+	fmt.Println(n, err)
+	n, _ = readable.ParseBytes("1 MiB")
+	fmt.Println(n)
+	// Output:
+	// 1536 <nil>
+	// 1048576
+}
+
+func ExampleParseBytesSI() {
+	n, _ := readable.ParseBytesSI("1 kB")
+	fmt.Println(n)
+	n, _ = readable.ParseBytesSI("1 KiB")
+	fmt.Println(n)
+	// Output:
+	// 1000
+	// 1024
+}
+
+func ExampleParseNumber() {
+	n, _ := readable.ParseNumber("12.5K")
+	fmt.Println(n)
+	n, _ = readable.ParseNumber("1,234,567")
+	fmt.Println(n)
+	// Output:
+	// 12500
+	// 1234567
+}
+
+func ExampleErrSyntax() {
+	_, err := readable.ParseNumber("twelve")
+	fmt.Println(errors.Is(err, readable.ErrSyntax))
+	_, err = readable.ParseBytes("5 parsecs")
+	fmt.Println(errors.Is(err, readable.ErrUnit))
+	_, err = readable.ParseBytes("-1 KB")
+	fmt.Println(errors.Is(err, readable.ErrRange))
+	// Output:
+	// true
+	// true
+	// true
 }

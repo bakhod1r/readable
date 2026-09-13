@@ -7,17 +7,18 @@ PAGES = [
     ("numbers", "Numbers", 3,
      "Compact integers and floats, spell scales, ordinals and counted nouns.",
      ["Number", "NumberFloat", "NumberWithPrecision", "NumberWithOptions", "NumberOptions",
-      "NumberWords", "Ordinal", "Count", "CountPlural", "Plural"]),
+      "NumberWords", "Ordinal", "Count", "CountPlural", "Plural", "ParseNumber"]),
     ("bytes", "Bytes & throughput", 4,
      "Sizes in binary, IEC and SI units, and data transfer rates.",
-     ["Bytes", "BytesIEC", "BytesSI", "FileSize", "BytesRate", "Throughput", "ThroughputIEC", "Bandwidth"]),
+     ["Bytes", "BytesIEC", "BytesSI", "FileSize", "BytesRate", "Throughput", "ThroughputIEC", "Bandwidth", "ParseBytes", "ParseBytesSI"]),
     ("time", "Durations & time", 5,
      "Durations at different lengths, latency, relative times, dates and ranges.\n\n"
      "`RelativeTime`, `Date`, `Time` and `TimeRange` read `time.Now`. Each has a "
      "`...From(now, ...)` twin that takes an explicit `now` — use it in tests.",
      ["Duration", "DurationShort", "DurationLong", "DurationWithOptions", "DurationOptions",
       "DurationNatural", "DurationApprox", "Latency", "RelativeTime", "RelativeTimeFrom",
-      "Date", "DateFrom", "Time", "TimeFrom", "TimeRange", "TimeRangeFrom"]),
+      "Date", "DateFrom", "Time", "TimeFrom", "TimeRange", "TimeRangeFrom", "ParseDuration",
+      "ETA", "Calendar", "Locale", "ParseLocale", "PluralRU"]),
     ("money", "Money", 6,
      "Amounts are `int64` **minor units** (cents for USD), never floats.\n\n"
      "| Minor digits | Currencies |\n|---|---|\n"
@@ -32,7 +33,8 @@ PAGES = [
       "Rate", "RateWithLabel", "PerMinute", "RequestRate"]),
     ("text", "Text", 8,
      "Labels from identifiers, English lists and booleans.",
-     ["Humanize", "Enum", "List", "ListWithOptions", "ListOptions", "Bool", "BoolLabel"]),
+     ["Humanize", "Enum", "List", "ListWithOptions", "ListOptions", "Bool", "BoolLabel",
+      "Initials", "Slug", "Ellipsis", "Roman", "SI"]),
     ("masking", "Masking & IDs", 9,
      "Maskers hide sensitive values for display and logging. Each documents exactly what it "
      "reveals and **fails closed**: input it cannot interpret is fully replaced by a placeholder.\n\n"
@@ -46,7 +48,12 @@ PAGES = [
      "{: .warning }\n`Truncate`, `Hash` and `ShortUUID` are for readability, not secrecy — "
      "they deliberately reveal leading and trailing characters.",
      ["MaskEmail", "MaskPhone", "MaskCard", "MaskToken", "MaskIP", "Mask",
-      "ID", "Hash", "ShortUUID", "Truncate"]),
+      "ID", "Hash", "ShortUUID", "Truncate", "Redact"]),
+    ("templates", "Parsing & templates", 10,
+     "Parse functions read formatted values back and return errors wrapping "
+     "`ErrSyntax`, `ErrUnit` or `ErrRange`. `FuncMap` exposes the formatters to "
+     "`text/template` and `html/template`.",
+     ["ErrSyntax", "FuncMap", "Format", "RedactAttr"]),
 ]
 
 

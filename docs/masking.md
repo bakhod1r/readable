@@ -216,3 +216,35 @@ Truncate is for readability, not secrecy: it reveals head+tail runes.
 ```go
 Truncate("a8f91234abcd", 4, 2) // "a8f9...cd"
 ```
+
+## Redact
+
+```go
+func Redact(text string) string
+```
+
+Redact finds and masks sensitive values inside free text such as log lines
+and error messages:
+
+  - key=value secrets (password, secret, token, api_key, access_token,
+```
+auth) and "Bearer" credentials: the value becomes "****"
+```
+
+  - JWTs and vendor API keys (sk_live_, pk_test_, ghp_, github_pat_, xoxb-,
+```
+AKIA...): MaskToken
+```
+
+  - email addresses: MaskEmail
+  - card numbers of 12–19 digits that pass the Luhn check: MaskCard
+  - phone numbers starting with "+": MaskPhone
+  - IPv4 addresses: MaskIP
+
+Detection is pattern based and best effort: secrets without a recognisable
+shape are not found. Use the Mask functions on known fields.
+
+```go
+Redact("login john.doe@gmail.com from 192.168.1.42")
+// "login j***@gmail.com from 192.168.*.*"
+```

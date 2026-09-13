@@ -3,6 +3,7 @@ package readable_test
 import (
 	"errors"
 	"math"
+	"slices"
 	"testing"
 	"time"
 
@@ -51,7 +52,22 @@ func TestZZReadme(t *testing.T) {
 	if e1 != nil || !errors.Is(e2, r.ErrUndefined) || r.DefaultPrecision != 2 || r.MaxPrecision != 9 {
 		t.Errorf("errs/consts: %v %v", e1, e2)
 	}
-	for i, c := range cases {
+	pb, eb := r.ParseBytes("1.5 KB")
+	pd, ed := r.ParseDuration("2 days, 1 hour and 32 minutes")
+	_, en := r.ParseNumber("twelve")
+	if pb != 1536 || pd != d || eb != nil || ed != nil || !errors.Is(en, r.ErrSyntax) {
+		t.Errorf("parse: %d %v %v %v %v", pb, pd, eb, ed, en)
+	}
+	extra := [][2]string{
+		{r.Redact("login john.doe@gmail.com password=hunter2"), "login j***@gmail.com password=****"},
+		{r.Uzbek.RelativeTimeFrom(now, now.Add(-3*time.Minute)), "3 daqiqa oldin"},
+		{r.Russian.DurationLong(49*time.Hour + 32*time.Minute), "2 дня, 1 час, 32 минуты"},
+		{r.ETA(25, 100, time.Minute), "~3m left"}, {r.Roman(2026), "MMXXVI"},
+		{r.German.RelativeTimeFrom(now, now.Add(-72*time.Hour)), "vor 3 Tagen"},
+		{r.Russian.List([]string{"Go", "Redis", "Kafka"}), "Go, Redis и Kafka"},
+		{r.Turkish.Percent(0.1534), "%15,34"},
+	}
+	for i, c := range slices.Concat(cases, extra) {
 		if c[0] != c[1] {
 			t.Errorf("case %d: got %q want %q", i, c[0], c[1])
 		}
