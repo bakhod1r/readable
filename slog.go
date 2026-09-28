@@ -1,6 +1,7 @@
 package readable
 
 import (
+	"fmt"
 	"log/slog"
 	"strings"
 )
@@ -14,7 +15,8 @@ import (
 //     and MaskIP
 //   - every other string value: Redact
 //
-// Non-string values under sensitive keys are replaced too; other non-string
+// Non-string values under sensitive keys are replaced too. Errors and
+// fmt.Stringers are masked through their text like strings; other non-string
 // values are kept.
 //
 //	logger := slog.New(slog.NewJSONHandler(os.Stdout,
@@ -26,10 +28,25 @@ func RedactAttr(_ []string, a slog.Attr) slog.Attr {
 			return slog.String(a.Key, maskStars4)
 		}
 	}
-	if a.Value.Kind() != slog.KindString {
+	var v string
+	switch a.Value.Kind() {
+	case slog.KindString:
+		v = a.Value.String()
+	case slog.KindAny:
+		// An error is the usual way a secret reaches a log — a driver error
+		// quoting the DSN — and a Stringer can carry anything. Both are
+		// masked through their text like a string.
+		switch x := a.Value.Any().(type) {
+		case error:
+			v = x.Error()
+		case fmt.Stringer:
+			v = x.String()
+		default:
+			return a
+		}
+	default:
 		return a
 	}
-	v := a.Value.String()
 	switch key {
 	case "email":
 		v = MaskEmail(v)

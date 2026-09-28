@@ -21,7 +21,8 @@ import (
 //	-          field omitted
 //
 // Untagged fields and fields whose tag does not fit their type use
-// fmt.Sprint, except that an unknown mask kind masks everything. A nil
+// fmt.Sprint, except that an unknown mask kind masks everything and a mask
+// tag on a non-string field prints "****". A nil
 // pointer or non-struct returns nil.
 //
 //	type User struct {
@@ -70,6 +71,10 @@ func formatField(v reflect.Value, tag string) string {
 		return Money(v.Int(), arg)
 	case kind == "mask" && v.Kind() == reflect.String:
 		return maskKind(arg, v.String())
+	case kind == "mask":
+		// A mask on a type it cannot mask fails closed: a card number held
+		// in an int64 is still a card number.
+		return maskStars4
 	}
 	return fmt.Sprint(v.Interface())
 }

@@ -35,6 +35,12 @@ func scanNumber(s string, i int) (r *big.Rat, next int, ok bool) {
 			b.WriteByte(c)
 			digits++
 		case c == ',' && digits > 0 && !dot:
+			// A group separator is followed by exactly three digits. "1,5"
+			// is a decimal comma in many locales; reading it as 15 would be
+			// silently ten times wrong, so the number ends here instead.
+			if !threeDigitGroup(s, i+1) {
+				return finishNumber(b.String(), digits, i)
+			}
 		case c == '.' && !dot:
 			b.WriteByte(c)
 			dot = true
@@ -43,6 +49,19 @@ func scanNumber(s string, i int) (r *big.Rat, next int, ok bool) {
 		}
 	}
 	return finishNumber(b.String(), digits, i)
+}
+
+// threeDigitGroup reports whether s[i:] starts with exactly three digits.
+func threeDigitGroup(s string, i int) bool {
+	if i+3 > len(s) {
+		return false
+	}
+	for _, c := range []byte(s[i : i+3]) {
+		if c < '0' || c > '9' {
+			return false
+		}
+	}
+	return i+3 == len(s) || s[i+3] < '0' || s[i+3] > '9'
 }
 
 func finishNumber(num string, digits, next int) (*big.Rat, int, bool) {
