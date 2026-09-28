@@ -8,6 +8,14 @@ Output strings are part of the public API.
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-09-28
+
+### Fixed
+
+- `RedactAttr` masks errors and `fmt.Stringer` values, not only strings.
+- A `mask=` tag on a non-string field fails closed instead of logging plaintext.
+- Parsers reject `1,5` rather than reading it as `15`: a comma must be followed by exactly three digits.
+
 ## [0.3.0] - 2026-09-13
 
 ### Added
