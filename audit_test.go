@@ -55,3 +55,18 @@ func TestParseRejectsAmbiguousComma(t *testing.T) {
 		t.Fatalf("ParseBytes(1,500 B) = %d, %v; want 1500", v, err)
 	}
 }
+
+// A comma too close to the end to carry a group of three is not a separator.
+func TestParseNumberRejectsATrailingShortGroup(t *testing.T) {
+	if v, err := ParseNumber("1,5"); err == nil {
+		t.Fatalf("ParseNumber(1,5) = %d, want an error", v)
+	}
+}
+
+// A value that is neither text, an error nor a Stringer has nothing to mask.
+func TestRedactAttrLeavesOtherValuesAlone(t *testing.T) {
+	a := slog.Any("note", struct{ N int }{1})
+	if got := RedactAttr(nil, a); !got.Equal(a) {
+		t.Fatalf("RedactAttr changed %v to %v", a, got)
+	}
+}
